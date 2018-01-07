@@ -1,5 +1,4 @@
 import psycopg2
-from sys import argv
 
 CONN_STRING = """host='localhost' dbname='news' user='vagrant' password='vagrant'"""
 
