@@ -21,7 +21,7 @@ def connect():
 
 def select_query(query):
     my_dbconn, my_cursor = connect()
-    my_cursor.execute(LIST_TABLES)
+    my_cursor.execute(query)
     return my_cursor.fetchall()
     my_dbconn.close()
 
