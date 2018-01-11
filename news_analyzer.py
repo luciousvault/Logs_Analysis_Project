@@ -10,6 +10,13 @@ POPULARITY_QUERY = """SELECT title, COUNT(log.id) as popularity
                         ORDER BY popularity DESC
                         LIMIT 3;"""
 
+AUTHORS_VIEWS_QUERY = """SELECT authors.name, COUNT(log.id) AS views
+                            FROM authors, articles, log
+                            WHERE authors.id = articles.author
+                            AND CONCAT('/article/',articles.slug) = log.path
+                            GROUP BY authors.name
+                            ORDER BY views DESC;"""
+
 # method intended to run "safe" select queries
 def connect():
     try:
@@ -33,6 +40,11 @@ def print_popular_articles():
     popularity_data = select_query(POPULARITY_QUERY)
     print(popularity_data)
 
+def print_popular_authors():
+    popularity_data = select_query(AUTHORS_VIEWS_QUERY)
+    print(popularity_data)
+
 if __name__ == '__main__':
     test_print_tables()
     print_popular_articles()
+    print_popular_authors()
