@@ -17,16 +17,17 @@ AUTHORS_VIEWS_QUERY = """SELECT authors.name, COUNT(log.id) AS views
                             GROUP BY authors.name
                             ORDER BY views DESC;"""
 
-ERROR_PERCENT_QUERY = """SELECT ROUND(errorCount * 100.0 / dayTotal, 1) AS percent, DAY 
-                         FROM (SELECT COUNT(status) AS dayTotal , 
-                            SUM( CASE WHEN status = '404 NOT FOUND' THEN 1 ELSE 0 END) 
-                                AS errorCount, DATE(time) AS DAY 
-                            FROM log GROUP BY DAY) AS temp1
+ERROR_PERCENT_QUERY = """SELECT ROUND(errorCount * 100.0 / dayTotal, 1) AS percent, DAY
+                         FROM (SELECT COUNT(status) AS dayTotal ,
+                         SUM( CASE WHEN status = '404 NOT FOUND'
+                                THEN 1 ELSE 0 END) AS errorCount,
+                         DATE(time) AS DAY
+                         FROM log GROUP BY DAY) AS temp1
                          ORDER BY percent DESC
                          LIMIT 1;"""
 
-# method intended to run "safe" select queries
-def connect():
+
+def connect():  # method intended to run "safe" select queries
     try:
         dbconn = psycopg2.connect(dbname="news")
         cursor = dbconn.cursor()
@@ -60,4 +61,4 @@ if __name__ == '__main__':
     test_print_tables()
     print_popular_articles()
     print_popular_authors()
-    print_highest_error_percent()
+    print_highest_error_percent
