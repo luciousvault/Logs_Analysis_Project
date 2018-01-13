@@ -47,7 +47,7 @@ def select_query(query):
 def print_popular_articles():
     print("3 most popular articles\n")
     popularity_data = select_query(POPULARITY_QUERY)
-    article_row_format = '"{}" — {} views\n'
+    article_row_format = '"{}" — {} views'
     for row in popularity_data:
         print(article_row_format.format(row[0], row[1]))
 
