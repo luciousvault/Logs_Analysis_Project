@@ -44,19 +44,16 @@ def select_query(query):
     my_dbconn.close()
 
 
-def test_print_tables():
-    tables = select_query(LIST_TABLES)
-    print(tables)
-
-
 def print_popular_articles():
+    print("3 most popular articles\n")
     popularity_data = select_query(POPULARITY_QUERY)
-    article_row_format = '"{}" — {} views'
+    article_row_format = '"{}" — {} views\n'
     for row in popularity_data:
         print(article_row_format.format(row[0], row[1]))
 
 
 def print_popular_authors():
+    print("\nAuthors listed by article views:\n")
     views_data = select_query(AUTHORS_VIEWS_QUERY)
     author_row_format = '{} - {} views'
     for row in views_data:
@@ -64,13 +61,13 @@ def print_popular_authors():
 
 
 def print_highest_error_percent():
+    print("\nDay with highest percentage of errors:\n")
     error_data = select_query(ERROR_PERCENT_QUERY)
     row = error_data[0]
     print('{} - {}%% errors'.format(row[1].strftime('%b %d, %Y'), row[0]))
 
 
 if __name__ == '__main__':
-    test_print_tables()
     print_popular_articles()
     print_popular_authors()
     print_highest_error_percent()
