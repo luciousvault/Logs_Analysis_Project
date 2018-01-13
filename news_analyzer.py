@@ -1,4 +1,5 @@
 import psycopg2
+from datetime import datetime
 
 LIST_TABLES = """SELECT TABLE_NAME FROM INFORMATION_SCHEMA.TABLES
     WHERE TABLE_CATALOG = 'news' AND TABLE_SCHEMA = 'public';"""
@@ -47,18 +48,24 @@ def test_print_tables():
 
 def print_popular_articles():
     popularity_data = select_query(POPULARITY_QUERY)
-    print(popularity_data)
+    article_row_format = '"{}" — {} views'
+    for row in popularity_data
+        print(article_row_format.format(row[0], row[1]))
 
 def print_popular_authors():
     views_data = select_query(AUTHORS_VIEWS_QUERY)
+    author_row_format = '{} - {} views'
+    for row in views_data
+        print(author_row_format.format(row[0],row[1]))
     print(views_data)
 
 def print_highest_error_percent():
     error_data = select_query(ERROR_PERCENT_QUERY)
-    print(error_data)
+    row = error_data[0]
+    print('{} - {}%% errors'.format(row[1].strftime('%b %d, %Y'),row[0]))
 
 if __name__ == '__main__':
     test_print_tables()
     print_popular_articles()
     print_popular_authors()
-    print_highest_error_percent
+    print_highest_error_percent()
