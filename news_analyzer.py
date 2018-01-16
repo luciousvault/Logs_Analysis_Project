@@ -3,11 +3,15 @@ import psycopg2
 from datetime import datetime
 
 
-POPULARITY_QUERY = """SELECT title, COUNT(log.id) as popularity
-                        FROM log, articles
-                        WHERE CONCAT('/article/',articles.slug) = log.path
-                        GROUP BY title
-                        ORDER BY popularity DESC
+POPULARITY_QUERY = """SELECT title, views
+                        FROM articles
+                        INNER JOIN (
+                          SELECT path, count(path) AS views
+                          FROM log
+                          GROUP BY log.path
+                        ) AS log
+                        ON log.path = '/article/' || articles.slug
+                        ORDER BY views DESC
                         LIMIT 3;"""
 
 AUTHORS_VIEWS_QUERY = """SELECT authors.name, COUNT(log.id) AS views
@@ -17,8 +21,8 @@ AUTHORS_VIEWS_QUERY = """SELECT authors.name, COUNT(log.id) AS views
                             GROUP BY authors.name
                             ORDER BY views DESC;"""
 
-ERROR_PERCENT_QUERY = """SELECT ROUND(errorCount * 100.0 / dayTotal, 1) 
-                                    AS percent, 
+ERROR_PERCENT_QUERY = """SELECT ROUND(errorCount * 100.0 / dayTotal, 1)
+                                    AS percent,
                                 DAY
                          FROM (SELECT COUNT(status) AS dayTotal ,
                          SUM( CASE WHEN status = '404 NOT FOUND'
@@ -28,8 +32,9 @@ ERROR_PERCENT_QUERY = """SELECT ROUND(errorCount * 100.0 / dayTotal, 1)
                          WHERE ROUND(errorCount * 100.0 / dayTotal, 1) > 1.0
                          ORDER BY percent DESC;"""
 
+
 def get_query_results(query):
-    """method intended to run "safe" select queries"""
+    """Method intended to run "safe" select queries"""
     try:
         dbconn = psycopg2.connect(database="news")
         cursor = dbconn.cursor()
@@ -42,8 +47,8 @@ def get_query_results(query):
         exit(1)
 
 
-
 def print_popular_articles():
+    """Prints the 3 most popular articles for the assignment"""
     print("3 most popular articles\n")
     popularity_data = get_query_results(POPULARITY_QUERY)
     article_row_format = '"{}" — {} views'
@@ -52,6 +57,7 @@ def print_popular_articles():
 
 
 def print_popular_authors():
+    """Prints the 3 most popular authors for the assignment"""
     print("\nAuthors listed by article views:\n")
     views_data = get_query_results(AUTHORS_VIEWS_QUERY)
     author_row_format = '{} - {} views'
@@ -60,11 +66,11 @@ def print_popular_authors():
 
 
 def print_highest_error_percent():
+    """Prints the days with errors > 1% for the assignment"""
     print("\nDay with highest percentage of errors:\n")
     error_data = get_query_results(ERROR_PERCENT_QUERY)
-    row = error_data[0]
     for percent, day in error_data:
-        print('{} - {}% errors'.format(day.strftime('%b %d, %Y'), percent))
+        print('{:%b %d, %Y} - {} errors'.format(day, percent))
 
 
 if __name__ == '__main__':
