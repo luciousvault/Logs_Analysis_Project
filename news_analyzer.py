@@ -1,4 +1,5 @@
 #!/usr/bin/env python3
+"""Main python file for the Logs Analysis project."""
 import psycopg2
 from datetime import datetime
 
